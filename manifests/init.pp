@@ -6,9 +6,22 @@
 #
 # Document parameters here.
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# Hiera_yaml
+# ftpserver::anonymous_enable: 'NO'
+# ftpserver::write_enable: 'YES'
+# ftpserver::ftpd_banner: 'FTP Server'
+# ftpserver::chroot_local_user: 'YES'
+# ftpserver::ftpusers:
+#   user1:
+#     comment: "FTP User 1"
+#     home: "/data/ftp/user1"
+#     password: "password"
+#   user2:
+#     comment: "FTP User 2"
+#     home: "/data/ftp/user2"
+#     password: "password"
+#  
+#
 #
 # === Variables
 #
@@ -35,7 +48,45 @@
 #
 # Copyright 2013 Your name here, unless otherwise noted.
 #
-class ftpserver {
+class ftpserver (
+  $anonymous_enable 	= 'NO',
+  $write_enable		= 'YES',
+  $ftpd_banner 		= 'FTP Server',
+  $chroot_local_user 	= 'YES',
+  $chroot_list_enable   = 'YES',
+  $userlist_enable	= 'NO',
+  $chroot_list_file     = '/etc/vsftpd/chroot_list', 
+  $ftpuserrootdirs	= ['/data',
+			   '/data/ftp'],
+) {
+
+  group { 'ftpusers':
+    ensure	=> present,
+  }
+
+  file { $ftpuserrootdirs:
+    ensure	=> 'directory',
+  }
+
+  create_resources('ftpserver::users', hiera('ftpserver::users', []))
 
 
+  file { '/etc/vsftpd':
+    ensure	=> 'directory',
+  }
+
+  file { $chroot_list_file:
+    content	=> template('ftpserver/vsftpd.chroot_list.erb'),
+    require	=> File['/etc/vsftpd'],
+  }
+
+  class { 'vsftpd':
+    anonymous_enable  => $anonymous_enable,
+    write_enable      => $write_enable,
+    ftpd_banner       => $ftpd_banner,
+    chroot_local_user => $chroot_local_user,
+    chroot_list_enable=> $chroot_list_enable,
+    chroot_list_file  => $chroot_list_file, 
+    userlist_enable   => $userlist_enable,
+  }
 }

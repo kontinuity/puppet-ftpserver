@@ -1,4 +1,4 @@
-puppet-monophylizer
+puppet-ftpserver
 ===================
 
 Puppet module to install 
@@ -9,28 +9,45 @@ Parameters
 -------------
 All parameters are read from hiera
 
+
+
 Classes
 -------------
+ftpserver
+ftpserver::users
 - 
 
 Dependencies
 -------------
+thias/vsftpd
 - 
 
 Examples
 -------------
-Hiera yaml
+
+Hiera_yaml example
 ```
-sample1:
-    param: 'sampledata'
+ ftpserver::ftpd_banner: 'FTP Server'
+ ftpserver::ftpusers:
+   user1:
+     comment: "FTP User 1"
+     home: "/data/ftp/user1"
+     password: "$1$hGAo41XE$y.BLWugfVr1.mLvkuLbRN/" 
+   user2:
+     comment: "FTP User 2"
+     home: "/data/ftp/user2"
+     password: "$1$hGAo41XE$y.BLWugfVr1.mLvkuLbRN/" 
 ```
+
+Create password hashes using command: "openssl passwd -l"
+
 Puppet code
 ```
-class { thisclass: }
+class { ftpserver: }
 ```
 Result
 -------------
-
+Working FTP server
 
 Limitations
 -------------
@@ -42,5 +59,5 @@ The module has been tested on:
 
 Authors
 -------------
-Author Name <p.gomersbach@gmail.com>
+Author Name <hugo.vanduijn@naturalis.nl>
 
