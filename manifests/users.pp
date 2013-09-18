@@ -42,9 +42,9 @@ define ftpserver::users(
 ) {
 
  exec { $username:
-    command 	=> "echo $username >> /etc/vsftpd/chroot_list",
+    command 	=> "echo $username >> /etc/vsftpd.chroot_list",
     path 	=> "/usr/local/bin/:/bin/",
-    require 	=> File['/etc/vsftpd/chroot_list'],
+    require 	=> File['/etc/vsftpd.chroot_list'],
   }
 
   file { $home:

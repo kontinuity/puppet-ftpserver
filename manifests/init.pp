@@ -55,7 +55,7 @@ class ftpserver (
   $chroot_local_user 	= 'YES',
   $chroot_list_enable   = 'YES',
   $userlist_enable	= 'NO',
-  $chroot_list_file     = '/etc/vsftpd/chroot_list', 
+  $chroot_list_file     = '/etc/vsftpd.chroot_list', 
   $ftpuserrootdirs	= ['/data',
 			   '/data/ftp'],
 ) {
@@ -70,14 +70,8 @@ class ftpserver (
 
   create_resources('ftpserver::users', hiera('ftpserver::users', []))
 
-
-  file { '/etc/vsftpd':
-    ensure	=> 'directory',
-  }
-
   file { $chroot_list_file:
     content	=> template('ftpserver/vsftpd.chroot_list.erb'),
-    require	=> File['/etc/vsftpd'],
   }
 
   class { 'vsftpd':
