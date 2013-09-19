@@ -21,7 +21,7 @@ ftpserver::users
 Dependencies
 -------------
 thias/vsftpd
- 
+firewall module 
 
 Examples
 -------------
@@ -56,6 +56,7 @@ This module has been built on and tested against Puppet ... and higher.
 
 The module has been tested on:
 - Ubuntu 12.04LTS 
+- CentOS 6.3
  
 
 Authors

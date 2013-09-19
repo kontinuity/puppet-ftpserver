@@ -60,6 +60,13 @@ class ftpserver (
 			   '/data/ftp'],
 ) {
 
+
+  firewall { '100 allow ftp and ssh access':
+     port   => [21, 22],
+    proto  => tcp,
+    action => accept,
+  }
+                                    
   group { 'ftpusers':
     ensure	=> present,
   }
