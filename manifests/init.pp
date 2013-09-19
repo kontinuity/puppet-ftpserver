@@ -56,17 +56,31 @@ class ftpserver (
   $chroot_list_enable   = 'YES',
   $userlist_enable	= 'NO',
   $chroot_list_file     = '/etc/vsftpd.chroot_list', 
+#  $pasv_enable	        = 'YES',
+  $pasv_min_port     	= '10000',
+  $pasv_max_port     	= '10200',
+#  $port_enable	      	= 'YES',
   $ftpuserrootdirs	= ['/data',
 			   '/data/ftp'],
 ) {
 
+  firewall { "000 accept all icmp requests":
+    proto  => "icmp",
+    action => "accept",
+  }
 
   firewall { '100 allow ftp and ssh access':
-     port   => [21, 22],
+    port   => [20, 21, 22],
     proto  => tcp,
     action => accept,
   }
                                     
+  firewall { '200 allow passive ftp port range':
+    port   => ["$pasv_min_port-$pasv_max_port"],
+    proto  => tcp,
+    action => accept,
+  }
+
   group { 'ftpusers':
     ensure	=> present,
   }
@@ -89,5 +103,9 @@ class ftpserver (
     chroot_list_enable=> $chroot_list_enable,
     chroot_list_file  => $chroot_list_file, 
     userlist_enable   => $userlist_enable,
+#    pasv_enable	      => $pasv_enable,
+    pasv_min_port     => $pasv_min_port,
+    pasv_max_port     => $pasv_max_port,
+#    port_enable	      => $port_enable,
   }
 }
