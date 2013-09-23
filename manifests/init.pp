@@ -93,6 +93,12 @@ class ftpserver (
     purge => true
   }
 
+  # Add hostname to /etc/hosts
+  host { 'localhost':
+    ip => '127.0.0.1',
+    host_aliases => [ $hostname ],
+  }
+
   if $backmeup == true {
     class { 'ftpserver::backmeup':
       backuphour         => $backuphour,
