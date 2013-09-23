@@ -49,6 +49,16 @@
 # Copyright 2013 Your name here, unless otherwise noted.
 #
 class ftpserver (
+  $backmeup = false,
+  $backuphour = 1,
+  $backupminute = 1,
+  $bucket = 'ftpserver',
+  $dest_id = undef,
+  $dest_key = undef,
+  $cloud = 's3',
+  $pubkey_id = undef,
+  $full_if_older_than = undef,
+  $remove_older_than = undef,
   $anonymous_enable 	= 'NO',
   $write_enable		= 'YES',
   $ftpd_banner 		= 'FTP Server',
@@ -77,6 +87,25 @@ class ftpserver (
     port   => ["$pasv_min_port-$pasv_max_port"],
     proto  => tcp,
     action => accept,
+  }
+
+  resources { 'firewall':
+    purge => true
+  }
+
+  if $backmeup == true {
+    class { 'ftpserver::backmeup':
+      backuphour         => $backuphour,
+      backupminute       => $backupminute,
+      backupdir          => $ftpuserrootdirs[0],
+      bucket             => $bucket,
+      dest_id            => $dest_id,
+      dest_key           => $dest_key,
+      cloud              => $cloud,
+      pubkey_id          => $pubkey_id,
+      full_if_older_than => $full_if_older_than,
+      remove_older_than  => $remove_older_than,
+    }
   }
 
   group { 'ftpusers':

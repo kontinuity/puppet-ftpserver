@@ -15,13 +15,14 @@ Classes
 -------------
 ftpserver
 ftpserver::users
-
+ftpserver::backmeup
 
 
 Dependencies
 -------------
 thias/vsftpd
 puppetlabs/firewall module
+duplicity module
 
 firewall open ports ( 20,21 and 10000-10200 ). Range 10000-10200 can be adjusted in with the parameters ftpserver::pasv_min_port and ftpserver::pasv_max_port
 
@@ -29,9 +30,16 @@ firewall open ports ( 20,21 and 10000-10200 ). Range 10000-10200 can be adjusted
 Examples
 -------------
 
-Hiera_yaml example
+Hiera_yaml example, with backup enabled
 ```
  ftpserver::ftpd_banner: 'FTP Server'
+ ftpserver::backmeup: true
+ ftpserver::backuphour: 3
+ ftpserver::cloud: 's3'
+ ftpserver::backupminute: 2
+ ftpserver::dest_id: '<your Amazon AWS ID>'
+ ftpserver::dest_key: '<your Amazon AWS key>'
+ ftpserver::bucket: 'ftpserverbucket'
  ftpserver::ftpusers:
    user1:
      comment: "FTP User 1"
@@ -44,6 +52,7 @@ Hiera_yaml example
 ```
 
 Create password hashes using command: "openssl passwd -1"
+In the hieradata example the password is : "password"
 
 Puppet code
 ```
