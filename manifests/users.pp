@@ -50,7 +50,7 @@ define ftpserver::users(
   file { $home:
     ensure	=> 'directory',
     owner	=> $title,
-    mode	=> 0770,
+    mode	=> "0770",
   }
 
   user { $username:

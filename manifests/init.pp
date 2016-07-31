@@ -49,6 +49,7 @@
 # Copyright 2013 Your name here, unless otherwise noted.
 #
 class ftpserver (
+  $enable_firewall = false,
   $backmeup = false,
   $backuphour = 1,
   $backupminute = 1,
@@ -68,29 +69,30 @@ class ftpserver (
   $chroot_list_file     = '/etc/vsftpd.chroot_list', 
   $pasv_min_port     	= '10000',
   $pasv_max_port     	= '10200',
-  $ftpuserrootdirs	= ['/data',
-			   '/data/ftp'],
+  $ftpuserrootdirs	= ['/home'],
 ) {
 
-  firewall { "000 accept all icmp requests":
-    proto  => "icmp",
-    action => "accept",
-  }
+  if $enable_firewall == true {
+    firewall { "000 accept all icmp requests":
+      proto  => "icmp",
+      action => "accept",
+    }
 
-  firewall { '100 allow ftp and ssh access':
-    port   => [20, 21, 22],
-    proto  => tcp,
-    action => accept,
-  }
-                                    
-  firewall { '200 allow passive ftp port range':
-    port   => ["$pasv_min_port-$pasv_max_port"],
-    proto  => tcp,
-    action => accept,
-  }
+    firewall { '100 allow ftp and ssh access':
+      dport   => [20, 21, 22],
+      proto  => tcp,
+      action => accept,
+    }
+                                      
+    firewall { '200 allow passive ftp port range':
+      port   => ["$pasv_min_port-$pasv_max_port"],
+      proto  => tcp,
+      action => accept,
+    }
 
-  resources { 'firewall':
-    purge => true
+    resources { 'firewall':
+      purge => true
+    }
   }
 
   # Add hostname to /etc/hosts
