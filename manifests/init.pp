@@ -60,16 +60,16 @@ class ftpserver (
   $pubkey_id = undef,
   $full_if_older_than = undef,
   $remove_older_than = undef,
-  $anonymous_enable 	= 'NO',
-  $write_enable		= 'YES',
-  $ftpd_banner 		= 'FTP Server',
-  $chroot_local_user 	= 'YES',
-  $chroot_list_enable   = 'YES',
-  $userlist_enable	= 'NO',
-  $chroot_list_file     = '/etc/vsftpd.chroot_list', 
-  $pasv_min_port     	= '10000',
-  $pasv_max_port     	= '10200',
-  $ftpuserrootdirs	= ['/home'],
+  $anonymous_enable = 'NO',
+  $write_enable = 'YES',
+  $ftpd_banner = 'FTP Server',
+  $chroot_local_user = 'YES',
+  $chroot_list_enable = 'YES',
+  $userlist_enable = 'NO',
+  $chroot_list_file = '/etc/vsftpd.chroot_list',
+  $pasv_min_port = '10000',
+  $pasv_max_port = '10200',
+  $ftpuserrootdirs = ['/home'],
 ) {
 
   if $enable_firewall == true {
@@ -80,10 +80,10 @@ class ftpserver (
 
     firewall { '100 allow ftp and ssh access':
       dport   => [20, 21, 22],
-      proto  => tcp,
-      action => accept,
+      proto   => tcp,
+      action  => accept,
     }
-                                      
+
     firewall { '200 allow passive ftp port range':
       port   => ["$pasv_min_port-$pasv_max_port"],
       proto  => tcp,
@@ -96,7 +96,7 @@ class ftpserver (
 
     # Add hostname to /etc/hosts
     host { 'localhost':
-      ip => '127.0.0.1',
+      ip           => '127.0.0.1',
       host_aliases => [ $hostname ],
     }
   }
@@ -116,29 +116,29 @@ class ftpserver (
     }
   }
 
-  group { 'ftpusers':
-    ensure	=> present,
+  group { 'ftp':
+    ensure  => present,
   }
 
   file { $ftpuserrootdirs:
-    ensure	=> 'directory',
+    ensure  => 'directory',
   }
 
   create_resources('ftpserver::users', hiera('ftpserver::users', []))
 
   file { $chroot_list_file:
-    content	=> template('ftpserver/vsftpd.chroot_list.erb'),
+    content  => template('ftpserver/vsftpd.chroot_list.erb'),
   }
 
   class { 'vsftpd':
-    anonymous_enable  => $anonymous_enable,
-    write_enable      => $write_enable,
-    ftpd_banner       => $ftpd_banner,
-    chroot_local_user => $chroot_local_user,
-    chroot_list_enable=> $chroot_list_enable,
-    chroot_list_file  => $chroot_list_file, 
-    userlist_enable   => $userlist_enable,
-    pasv_min_port     => $pasv_min_port,
-    pasv_max_port     => $pasv_max_port,
+    anonymous_enable   => $anonymous_enable,
+    write_enable       => $write_enable,
+    ftpd_banner        => $ftpd_banner,
+    chroot_local_user  => $chroot_local_user,
+    chroot_list_enable => $chroot_list_enable,
+    chroot_list_file   => $chroot_list_file,
+    userlist_enable    => $userlist_enable,
+    pasv_min_port      => $pasv_min_port,
+    pasv_max_port      => $pasv_max_port,
   }
 }

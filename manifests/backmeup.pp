@@ -13,7 +13,7 @@ class ftpserver::backmeup (
   $remove_older_than = undef,
 )
 {
-  notify {'Backup enabled':}
+  notify { 'Backup enabled': }
 
   duplicity { 'backup':
     directory          => $backupdir,

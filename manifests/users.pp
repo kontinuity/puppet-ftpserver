@@ -36,29 +36,30 @@
 define ftpserver::users(
   $comment = '',
   $username = $title,
-  $groups = 'ftpusers',
+  $groups = 'ftp',
   $home = undef,
   $password = undef,
 ) {
 
- exec { $username:
-    command 	=> "echo $username >> /etc/vsftpd.chroot_list",
-    path 	=> "/usr/local/bin/:/bin/",
-    require 	=> File['/etc/vsftpd.chroot_list'],
+  exec { $username:
+    command  => "echo $username >> /etc/vsftpd.chroot_list",
+    path     => "/usr/local/bin/:/bin/",
+    require  => File['/etc/vsftpd.chroot_list'],
   }
 
   file { $home:
-    ensure	=> 'directory',
-    owner	=> $title,
-    mode	=> "0770",
+    ensure  => 'directory',
+    owner   => $title,
+    mode    => "0770",
   }
 
   user { $username:
     ensure      => present,
     groups      => $groups,
-    home	=> $home,
-    password	=> $password,
+    home        => $home,
+    password    => $password,
     comment     => $comment,
-    require	=> Group[$groups],
+    require     => Group[$groups],
+    shell       => "/sbin/nologin",
   }
 }
