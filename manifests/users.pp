@@ -60,6 +60,6 @@ define ftpserver::users(
     password    => $password,
     comment     => $comment,
     require     => Group[$groups],
-    shell       => "/sbin/nologin",
+    shell       => "/usr/sbin/nologin",
   }
 }
