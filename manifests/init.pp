@@ -70,6 +70,7 @@ class ftpserver (
   $pasv_min_port = '10000',
   $pasv_max_port = '10200',
   $ftpuserrootdirs = ['/home'],
+  $pam_service_name = 'ftp',
 ) {
 
   if $enable_firewall == true {
@@ -140,5 +141,6 @@ class ftpserver (
     userlist_enable    => $userlist_enable,
     pasv_min_port      => $pasv_min_port,
     pasv_max_port      => $pasv_max_port,
+    pam_service_name   => $pam_service_name,
   }
 }
